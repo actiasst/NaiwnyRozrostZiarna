@@ -6,6 +6,7 @@
 #include <cstring>
 #include <stdio.h>
 #include <string.h>
+#include <process.h>
 
 #define ID_PRZYCISK_1 501
 #define ID_PRZYCISK_2 502
@@ -18,6 +19,9 @@
 #define ID_PRZYCISK_9 509
 #define ID_PRZYCISK_10 510
 #define ID_PRZYCISK_11 511
+#define ID_PRZYCISK_12 512
+#define ID_PRZYCISK_13 513
+#define ID_PRZYCISK_14 514
 
 using namespace std;
 LPSTR NazwaKlasy = "Klasa Okienka";
@@ -38,13 +42,166 @@ HWND g_hPrzycisk8;
 HWND g_hPrzycisk9;
 HWND g_hPrzycisk10;
 HWND g_hPrzycisk11;
+HWND g_hPrzycisk12;
+HWND g_hPrzycisk13;
+HWND g_hPrzycisk14;
 HWND zczytanie_x;
 HWND zczytanie_y;
 HWND hwnd;
 HWND label_x;
 HWND label_y;
 HWND label_wynik;
+HWND label_ciagle_losowanie;
+HWND label_period;
 Plansza plansza;
+bool flaga_stanu;
+bool flaga_period = false;
+bool czy_losowac = false;
+
+void __cdecl watek_z_promieniem(void *arg) {
+	plansza.z_promieniem(hwnd);
+	_endthread();
+}
+
+void __cdecl watek_ciagle_losowanie(void *arg) {
+	while (czy_losowac) {
+		plansza.losuj(hwnd);
+		Sleep(2000);
+	}
+	_endthread();
+}
+
+void __cdecl watek_moore2(void* arg) {
+	if (flaga_period)
+		plansza.moore_period(hwnd);
+	else
+		plansza.moore(hwnd);
+	_endthread();
+}
+
+void __cdecl watek_von_neuman2(void* arg) {
+	if (flaga_period)
+		plansza.von_neuman_period(hwnd);
+	else
+		plansza.von_neuman(hwnd);
+	_endthread();
+}
+
+void __cdecl watek_hex_l2(void* arg) {
+	if (flaga_period)
+		plansza.hex_l_period(hwnd);
+	else
+		plansza.hex_l(hwnd);
+	_endthread();
+}
+
+void __cdecl watek_hex_p2(void* arg) {
+	if (flaga_period)
+		plansza.hex_p_period(hwnd);
+	else
+		plansza.hex_p(hwnd);
+	_endthread();
+}
+
+void __cdecl watek_hex_losowe2(void* arg) {
+	if (flaga_period)
+		plansza.hex_losowe_period(hwnd);
+	else
+		plansza.hex_losowe(hwnd);
+	_endthread();
+}
+
+void __cdecl watek_pentagonalne2(void* arg) {
+	if (flaga_period)
+		plansza.pentagonalne_period(hwnd);
+	else
+		plansza.pentagonalne(hwnd);
+	_endthread();
+}
+
+void __cdecl watek_moore(void* arg) {
+	flaga_stanu = true;
+	while (plansza.czy_znajduje_sie_zero() && flaga_stanu) {
+		HANDLE watek = (HANDLE)_beginthread(watek_moore2, 0, NULL);
+		WaitForSingleObject(watek, INFINITE);
+		plansza.zamien();
+		if (plansza.get_x() < 20)
+			plansza.maluj(hwnd);
+		else
+			plansza.maluj2(hwnd);
+	}
+	_endthread();
+}
+
+void __cdecl watek_von_neuman(void* arg) {
+	flaga_stanu = true;
+	while (plansza.czy_znajduje_sie_zero() && flaga_stanu) {
+		HANDLE watek = (HANDLE)_beginthread(watek_von_neuman2, 0, NULL);
+		WaitForSingleObject(watek, INFINITE);
+		plansza.zamien();
+		if (plansza.get_x() < 20)
+			plansza.maluj(hwnd);
+		else
+			plansza.maluj2(hwnd);
+	}
+	_endthread();
+}
+
+void __cdecl watek_hex_l(void* arg) {
+	flaga_stanu = true;
+	while (plansza.czy_znajduje_sie_zero() && flaga_stanu) {
+		HANDLE watek = (HANDLE)_beginthread(watek_hex_l2, 0, NULL);
+		WaitForSingleObject(watek, INFINITE);
+		plansza.zamien();
+		if (plansza.get_x() < 20)
+			plansza.maluj(hwnd);
+		else
+			plansza.maluj2(hwnd);
+	}
+	_endthread();
+}
+
+void __cdecl watek_hex_p(void* arg) {
+	flaga_stanu = true;
+	while (plansza.czy_znajduje_sie_zero() && flaga_stanu) {
+		HANDLE watek = (HANDLE)_beginthread(watek_hex_p2, 0, NULL);
+		WaitForSingleObject(watek, INFINITE);
+		plansza.zamien();
+		if (plansza.get_x() < 20)
+			plansza.maluj(hwnd);
+		else
+			plansza.maluj2(hwnd);
+	}
+	_endthread();
+}
+
+void __cdecl watek_hex_losowe(void* arg) {
+	flaga_stanu = true;
+	while (plansza.czy_znajduje_sie_zero() && flaga_stanu) {
+		HANDLE watek = (HANDLE)_beginthread(watek_hex_losowe2, 0, NULL);
+		WaitForSingleObject(watek, INFINITE);
+		plansza.zamien();
+		if (plansza.get_x() < 20)
+			plansza.maluj(hwnd);
+		else
+			plansza.maluj2(hwnd);
+	}
+	_endthread();
+}
+
+void __cdecl watek_pentagonalne(void* arg) {
+	flaga_stanu = true;
+	while (plansza.czy_znajduje_sie_zero() && flaga_stanu) {
+		HANDLE watek = (HANDLE)_beginthread(watek_pentagonalne2, 0, NULL);
+		WaitForSingleObject(watek, INFINITE);
+		plansza.zamien();
+		if (plansza.get_x() < 20)
+			plansza.maluj(hwnd);
+		else
+			plansza.maluj2(hwnd);
+	}
+	_endthread();
+}
 
 //int main() {
 //	//srand(time(NULL));
@@ -59,7 +216,7 @@ Plansza plansza;
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	srand(time(NULL));
-	plansza = Plansza(10, 10);
+	plansza = Plansza(100, 100);
 	wc.cbSize = sizeof(WNDCLASSEX);
 	wc.style = 0;
 	wc.lpfnWndProc = WndProc;
@@ -112,11 +269,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	g_hPrzycisk7 = CreateWindowEx(0, "BUTTON", "Hexagonalne P", WS_CHILD | WS_VISIBLE,
 		10, tmp, 150, 30, hwnd, (HMENU)ID_PRZYCISK_7, hInstance, NULL);
 	tmp += 40;
+	g_hPrzycisk12 = CreateWindowEx(0, "BUTTON", "Hexagonalne Losowe", WS_CHILD | WS_VISIBLE,
+		10, tmp, 150, 30, hwnd, (HMENU)ID_PRZYCISK_12, hInstance, NULL);
+	tmp += 40;
 	g_hPrzycisk8 = CreateWindowEx(0, "BUTTON", "Pentagonalne", WS_CHILD | WS_VISIBLE,
 		10, tmp, 150, 30, hwnd, (HMENU)ID_PRZYCISK_8, hInstance, NULL);
 	tmp += 40;
 	g_hPrzycisk9 = CreateWindowEx(0, "BUTTON", "Ciągłe losowanie", WS_CHILD | WS_VISIBLE,
 		10, tmp, 150, 30, hwnd, (HMENU)ID_PRZYCISK_9, hInstance, NULL);
+	label_ciagle_losowanie = CreateWindowEx(0, "STATIC", "WYŁ", WS_CHILD | WS_VISIBLE |
+		SS_LEFT, 170, tmp, 40, 30, hwnd, NULL, hInstance, NULL);
 	tmp += 40;
 	g_hPrzycisk10 = CreateWindowEx(0, "BUTTON", "Reset", WS_CHILD | WS_VISIBLE,
 		10, tmp, 150, 30, hwnd, (HMENU)ID_PRZYCISK_10, hInstance, NULL);
@@ -128,6 +290,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	tmp += 40;
 	g_hPrzycisk11 = CreateWindowEx(0, "BUTTON", "Ustal wielkość", WS_CHILD | WS_VISIBLE,
 		10, tmp, 150, 30, hwnd, (HMENU)ID_PRZYCISK_11, hInstance, NULL);
+	tmp += 40;
+	g_hPrzycisk13 = CreateWindowEx(0, "BUTTON", "Pauza", WS_CHILD | WS_VISIBLE,
+		10, tmp, 150, 30, hwnd, (HMENU)ID_PRZYCISK_13, hInstance, NULL); 
+	tmp += 40;
+	g_hPrzycisk14 = CreateWindowEx(0, "BUTTON", "Period", WS_CHILD | WS_VISIBLE,
+		10, tmp, 150, 30, hwnd, (HMENU)ID_PRZYCISK_14, hInstance, NULL);
+	label_period = CreateWindowEx(0, "STATIC", "WYŁ", WS_CHILD | WS_VISIBLE |
+		SS_LEFT, 170, tmp, 40, 30, hwnd, NULL, hInstance, NULL);
 
 	HWND hStatic = CreateWindowEx(0, "STATIC", NULL, WS_CHILD | WS_VISIBLE |
 		SS_LEFT, 300, 50, 700, 700, hwnd, NULL, hInstance, NULL);
@@ -222,22 +392,58 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			int grupa_modulo_y = plansza.get_y() / 3;
 			for (int i = 0; i < plansza.get_y(); i++)
 				for (int j = 0; j < plansza.get_x(); j++)
-					if (i%grupa_modulo_x == grupa_modulo_x/2 && j%grupa_modulo_y == grupa_modulo_y/2)
+					if (i%grupa_modulo_x == grupa_modulo_x / 2 && j%grupa_modulo_y == grupa_modulo_y / 2)
 						plansza.ustal_poczatkowe_ziarno(i, j);
 			plansza.maluj(hwnd);
 			break;
 		}
+		case ID_PRZYCISK_3:
+			_beginthread(watek_z_promieniem, 0, NULL);
+			break;
 		case ID_PRZYCISK_4:
-			plansza.von_neuman(hwnd);
+			_beginthread(watek_von_neuman, 0, NULL);
 			break;
-		case ID_PRZYCISK_5:
-			plansza.moore(hwnd);
+		case ID_PRZYCISK_5: {
+			_beginthread(watek_moore, 0, NULL);
+			break; }
+		case ID_PRZYCISK_6:
+			_beginthread(watek_hex_l, 0, NULL);
 			break;
-		case ID_PRZYCISK_10:
+		case ID_PRZYCISK_7:
+			_beginthread(watek_hex_p, 0, NULL);
+			break;
+		case ID_PRZYCISK_8:
+			_beginthread(watek_pentagonalne, 0, NULL);
+			break;
+		case ID_PRZYCISK_9:
+			czy_losowac = (czy_losowac + 1) % 2;
+			if (czy_losowac) {
+				SetWindowText(label_ciagle_losowanie, "WŁ");
+				_beginthread(watek_ciagle_losowanie, 0, NULL);
+			}
+			else
+				SetWindowText(label_ciagle_losowanie, "WYŁ");
+			break;
+		case ID_PRZYCISK_10: {
+			flaga_stanu = false;
 			plansza.reset();
-			plansza.maluj(hwnd);
+			//plansza.maluj(hwnd);
+			HDC hdcOkno = GetDC(hwnd);
+			HBRUSH wypelnienie, wypelnienie_opakowanie;
+			HPEN ramka, ramka_opakowanie;
+			wypelnienie = CreateSolidBrush(0xF0F0F0);
+			ramka = CreatePen(PS_SOLID, 1, 0xF0F0F0);
+			wypelnienie_opakowanie = (HBRUSH)SelectObject(hdcOkno, wypelnienie);
+			ramka_opakowanie = (HPEN)SelectObject(hdcOkno, ramka);
+			Rectangle(hdcOkno, 300, 50, 1000, 750);
+			SelectObject(hdcOkno, wypelnienie);
+			SelectObject(hdcOkno, ramka);
+			DeleteObject(wypelnienie);
+			DeleteObject(ramka);
+			ReleaseDC(hwnd, hdcOkno);
 			break;
-		case ID_PRZYCISK_11:
+		}
+		case ID_PRZYCISK_11: {
 			plansza.reset();
 			plansza.maluj(hwnd);
 			DWORD dlugosc = GetWindowTextLength(zczytanie_x);
@@ -250,9 +456,22 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				plansza.zmien_rozmiar(10, 10);
 				break;
 			}
-			plansza.zmien_rozmiar(atoi(Bufor),atoi(Bufor2));
+			plansza.zmien_rozmiar(atoi(Bufor), atoi(Bufor2));
 			GlobalFree(Bufor);
 			GlobalFree(Bufor2);
+			break; }
+		case ID_PRZYCISK_12:
+			_beginthread(watek_hex_losowe, 0, NULL);
+			break;
+		case ID_PRZYCISK_13:
+			flaga_stanu = false;
+			break;
+		case ID_PRZYCISK_14:
+			flaga_period = (flaga_period + 1) % 2;
+			if(flaga_period)
+				SetWindowText(label_period, "WŁ");
+			else
+				SetWindowText(label_period, "WYŁ");
 			break;
 		}
 	default:
