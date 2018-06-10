@@ -1,0 +1,11 @@
+﻿  Plansza.cpp
+c:\users\lord actias\documents\visual studio 2015\projects\project7\project7\plansza.cpp(197): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\lord actias\documents\visual studio 2015\projects\project7\project7\plansza.cpp(198): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\lord actias\documents\visual studio 2015\projects\project7\project7\plansza.cpp(199): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\lord actias\documents\visual studio 2015\projects\project7\project7\plansza.cpp(200): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\lord actias\documents\visual studio 2015\projects\project7\project7\plansza.cpp(227): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\lord actias\documents\visual studio 2015\projects\project7\project7\plansza.cpp(228): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\lord actias\documents\visual studio 2015\projects\project7\project7\plansza.cpp(219): warning C4101: 'ramka_opakowanie': unreferenced local variable
+c:\users\lord actias\documents\visual studio 2015\projects\project7\project7\plansza.cpp(217): warning C4101: 'wypelnienie_opakowanie': unreferenced local variable
+  Project7.vcxproj -> C:\Users\Lord Actias\documents\visual studio 2015\Projects\Project7\Debug\Project7.exe
+  Project7.vcxproj -> C:\Users\Lord Actias\documents\visual studio 2015\Projects\Project7\Debug\Project7.pdb (Partial PDB)
